@@ -5,6 +5,6 @@ public record UpsertBreakfastRequest(
     string Description,
     DateTime StartDateTime,
     DateTime EndDateTime,
-    List<string> Savory,
-    List<string> Sweet
+    string Savory,
+    string Sweet
 );

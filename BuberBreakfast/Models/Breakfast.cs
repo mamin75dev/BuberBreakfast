@@ -18,16 +18,16 @@ public class Breakfast
     public DateTime StartDateTime { get; set; }
     public DateTime EndDateTime { get; set; }
     public DateTime LastModificationDateTime { get; set; }
-    public List<string> Savory { get; set; }
-    public List<string> Sweet { get; set; }
+    public string Savory { get; set; }
+    public string Sweet { get; set; }
 
     public static ErrorOr<Breakfast> Create(
         string name,
         string description,
         DateTime startDateTime,
         DateTime endDateTime,
-        List<string> savory,
-        List<string> sweet,
+        string savory,
+        string sweet,
         Guid? id = null
     )
     {
