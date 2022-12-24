@@ -15,4 +15,14 @@ public class Errors
         public static Error NotFound =>
             Error.NotFound(code: "Breakfast.NotFound!", description: "Breakfast not found!");
     }
+
+    public static class User
+    {
+        public static Error InvalidPhoneNumber =>
+            Error.NotFound(code: "User.InvalidPhoneNumber!", description: "Phone number is invalid");
+        public static Error InvalidEmail =>
+            Error.NotFound(code: "User.InvalidEmail!", description: "Email is invalid");
+        public static Error NotFound =>
+            Error.NotFound(code: "User.NotFound!", description: "User not found!");
+    }
 }

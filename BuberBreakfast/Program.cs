@@ -1,5 +1,6 @@
 using BuberBreakfast.Models;
 using BuberBreakfast.Services.Breakfasts;
+using BuberBreakfast.Services.Users;
 using Microsoft.EntityFrameworkCore;
 using MySql.EntityFrameworkCore.Extensions;
 
@@ -7,6 +8,7 @@ var builder = WebApplication.CreateBuilder(args);
 {
     builder.Services.AddControllers();
     builder.Services.AddScoped<IBreakfastService, BreakfastService>();
+    builder.Services.AddScoped<IUserService, UserService>();
     builder.Services.AddEntityFrameworkMySQL().AddDbContext<AppDbContext>(options =>
     {
         options.UseMySQL(builder.Configuration.GetConnectionString("DefaultConnection"));

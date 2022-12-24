@@ -6,7 +6,6 @@ namespace BuberBreakfast.Services.Breakfasts;
 
 public class BreakfastService : IBreakfastService
 {
-    private static readonly Dictionary<Guid, Breakfast> _breakfasts = new();
     private readonly AppDbContext _appDbContext;
 
     public BreakfastService(AppDbContext appDbContext)
