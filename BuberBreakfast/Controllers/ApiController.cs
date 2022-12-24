@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Mvc.ModelBinding;
 namespace BuberBreakfast.Controllers;
 
 [ApiController]
-[Route("[controller]")]
+[Route("/api/[controller]")]
 public class ApiController : ControllerBase
 {
     protected IActionResult Problem(List<Error> errors)

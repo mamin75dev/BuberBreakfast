@@ -1,41 +1,113 @@
 using BuberBreakfast.Models;
 using ErrorOr;
+using Microsoft.EntityFrameworkCore;
 
 namespace BuberBreakfast.Services.Breakfasts;
 
 public class BreakfastService : IBreakfastService
 {
     private static readonly Dictionary<Guid, Breakfast> _breakfasts = new();
+    private readonly AppDbContext _appDbContext;
 
-    public ErrorOr<Created> CreateBreakfast(Breakfast breakfast)
+    public BreakfastService(AppDbContext appDbContext)
     {
-        _breakfasts.Add(breakfast.Id, breakfast);
+        _appDbContext = appDbContext;
+    }
+
+    public async Task<ErrorOr<Created>> CreateBreakfast(Breakfast breakfast)
+    {
+
+        _appDbContext.Breakfasts.Add(breakfast);
+        await _appDbContext.SaveChangesAsync();
 
         return Result.Created;
     }
 
-    public ErrorOr<Breakfast> GetBreakfast(Guid id)
+    public async Task<ErrorOr<Breakfast>> GetBreakfast(Guid id)
     {
-        if (_breakfasts.TryGetValue(id, out var breakfast))
+
+        Breakfast breakfast = await _appDbContext.Breakfasts.Select(breakfast => new Breakfast
         {
-            return breakfast;
+            Id = breakfast.Id,
+            Name = breakfast.Name,
+            Description = breakfast.Description,
+            StartDateTime = breakfast.StartDateTime,
+            EndDateTime = breakfast.EndDateTime,
+            LastModificationDateTime = breakfast.LastModificationDateTime,
+            Savory = breakfast.Savory,
+            Sweet = breakfast.Sweet,
+        }).FirstOrDefaultAsync(br => br.Id == id);
+
+        if (breakfast == null)
+        {
+            return Errors.Breakfast.NotFound;
         }
 
-        return Errors.Breakfast.NotFound;
+        return breakfast;
+
     }
 
-    public ErrorOr<UpsertedBreakfast> UpsertBreakfast(Breakfast breakfast)
+    public async Task<ErrorOr<UpsertedBreakfast>> UpsertBreakfast(Breakfast breakfast)
     {
-        var IsNewlyCreated = _breakfasts.ContainsKey(breakfast.Id);
-        _breakfasts[breakfast.Id] = breakfast;
+
+        var entity = await _appDbContext.Breakfasts.FirstOrDefaultAsync(br => br.Id == breakfast.Id);
+
+        bool IsNewlyCreated = false;
+        if (entity == null)
+        {
+            IsNewlyCreated = true;
+            _appDbContext.Breakfasts.Add(breakfast);
+        }
+        else
+        {
+            entity.Name = breakfast.Name;
+            entity.Description = breakfast.Description;
+            entity.StartDateTime = breakfast.StartDateTime;
+            entity.EndDateTime = breakfast.EndDateTime;
+            entity.LastModificationDateTime = DateTime.UtcNow;
+            entity.Savory = breakfast.Savory;
+            entity.Sweet = breakfast.Sweet;
+        }
+
+        await _appDbContext.SaveChangesAsync();
 
         return new UpsertedBreakfast(IsNewlyCreated);
     }
 
-    public ErrorOr<Deleted> DeleteBreakfast(Guid id)
+    public async Task<ErrorOr<Deleted>> DeleteBreakfast(Guid id)
     {
-        _breakfasts.Remove(id);
+        var entity = new Breakfast
+        {
+            Id = id,
+        };
+
+        _appDbContext.Attach(entity);
+        _appDbContext.Remove(entity);
+
+        await _appDbContext.SaveChangesAsync();
 
         return Result.Deleted;
+    }
+
+    public async Task<ErrorOr<List<Breakfast>>> GetBreakfasts()
+    {
+        List<Breakfast> List = await _appDbContext.Breakfasts.Select(breakfast => new Breakfast
+        {
+            Id = breakfast.Id,
+            Name = breakfast.Name,
+            Description = breakfast.Description,
+            StartDateTime = breakfast.StartDateTime,
+            EndDateTime = breakfast.EndDateTime,
+            LastModificationDateTime = breakfast.LastModificationDateTime,
+            Savory = breakfast.Savory,
+            Sweet = breakfast.Sweet,
+        }).ToListAsync();
+
+        if (List.Count == 0)
+        {
+            return Errors.Breakfast.NotFound;
+        }
+
+        return List;
     }
 }

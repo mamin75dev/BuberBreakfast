@@ -32,7 +32,7 @@ public class Breakfast
     )
     {
         List<Error> errors = new();
-        if (name.Length is < MinDescriptionLength or > MaxDescriptionLength)
+        if (name.Length is < MinNameLength or > MaxNameLength)
         {
             errors.Add(Errors.Breakfast.InvalidName);
         }

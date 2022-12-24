@@ -6,8 +6,9 @@ public class AppDbContext : DbContext
 {
     public DbSet<Breakfast> Breakfasts { get; set; }
 
+    public AppDbContext (DbContextOptions options) : base(options) { }
+
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        optionsBuilder.UseMySQL("server=localhost;database=buber_breakfast;uid=root;pwd=Mohamad1375");
     }
 }
