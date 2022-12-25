@@ -93,6 +93,44 @@ namespace BuberBreakfast.Services.Posts
             return List;
         }
 
+        public async Task<ErrorOr<Post>> GetPostDetails(Guid id)
+        {
+            ErrorOr<Post> post = await _appDbContext.Posts.Select(post => new Post
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Description = post.Description,
+                ImageUrl = post.ImageUrl,
+                CreatedDate = post.CreatedDate,
+                UpdatedDate = post.UpdatedDate,
+                UserId = post.UserId,
+            }).FirstOrDefaultAsync();
+
+            if (post.IsError) return Errors.Post.NotFound;
+
+            var postDetails = post.Value;
+
+            ErrorOr<List<Comment>> comments = await _appDbContext.Comments.Join(_appDbContext.Posts, comment => comment.PostId, post => post.Id, (comment, post) => new
+            {
+                id = comment.Id,
+                text = comment.Text,
+                createdDate = comment.CreatedDate,
+                postId = comment.PostId,
+            }).Where(c => c.postId == id).Select(c => new Comment
+            {
+                Id = c.id,
+                Text = c.text,
+                CreatedDate = c.createdDate.Date,
+                PostId = c.postId,
+            }).ToListAsync();
+
+            if (comments.IsError) return Errors.Comment.NotFound;
+
+            postDetails.Comments = comments.Value;
+
+            return postDetails;
+        }
+
         public async Task<ErrorOr<UpdatedPostResult>> UpdatePost(Post post)
         {
             var entity = await _appDbContext.Posts.FirstOrDefaultAsync(post => post.Id == post.Id);

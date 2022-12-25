@@ -30,4 +30,9 @@ public class Errors
     {
         public static Error NotFound => Error.NotFound(code: "Post.NotFound!", description: "Post Not Found!");
     }
+
+    public static class Comment
+    {
+        public static Error NotFound => Error.NotFound(code: "Comment.NotFound!", description: "Comment Not Found!");
+    }
 }

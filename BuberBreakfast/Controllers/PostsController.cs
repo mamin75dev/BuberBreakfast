@@ -62,11 +62,14 @@ namespace BuberBreakfast.Controllers
             return Ok(posts.Value);
         }
 
-        [HttpGet("post_details/{id:guid}")]
+        [HttpGet("details/{id:guid}")]
         public async Task<IActionResult> GetPostDetails(Guid id)
         {
+            ErrorOr<Post> post = await _postService.GetPostDetails(id);
 
-            return null;
+            if (post.IsError) return Problem(post.Errors);
+
+            return Ok(post.Value);
         }
 
         [NonAction]
