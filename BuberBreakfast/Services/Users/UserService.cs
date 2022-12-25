@@ -15,7 +15,7 @@ namespace BuberBreakfast.Services.Users
 
         public async Task<ErrorOr<Created>> CreateUser(AppUser user)
         {
-            _appDbContext.Users.Add(user);
+            _appDbContext.AppUsers.Add(user);
             await _appDbContext.SaveChangesAsync();
 
             return Result.Created;
@@ -23,13 +23,14 @@ namespace BuberBreakfast.Services.Users
 
         public async Task<ErrorOr<AppUser>> GetUser(Guid userId)
         {
-            var user = await _appDbContext.Users.Select(user => new AppUser
+            var user = await _appDbContext.AppUsers.Select(user => new AppUser
             {
                 Id = user.Id,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
                 Email = user.Email,
                 PhoneNumber = user.PhoneNumber,
+                CreatedDate = user.CreatedDate,
 
             }).FirstOrDefaultAsync(user => user.Id == userId);
 
@@ -43,13 +44,13 @@ namespace BuberBreakfast.Services.Users
 
         public async Task<ErrorOr<UpdatedUser>> UpdateUser(AppUser user)
         {
-            var entity = await _appDbContext.Users.FirstOrDefaultAsync(user => user.Id == user.Id);
+            var entity = await _appDbContext.AppUsers.FirstOrDefaultAsync(user => user.Id == user.Id);
 
             bool IsNewlyCreated = false;
             if (entity == null)
             {
                 IsNewlyCreated = true;
-                _appDbContext.Users.Add(user);
+                _appDbContext.AppUsers.Add(user);
             }
             else
             {

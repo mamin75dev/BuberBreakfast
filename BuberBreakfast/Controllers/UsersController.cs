@@ -38,7 +38,7 @@ namespace BuberBreakfast.Controllers
 
             return getUserResult.Match(user => Ok(MapUserResponse(user)), Problem);
         }
-
+        [HttpPut("{id:guid}")]
         public async Task<IActionResult> UpdateUser(Guid id, UpdateUserRequest request)
         {
             ErrorOr<AppUser> requestToUserResult = AppUser.From(id, request);
@@ -55,6 +55,7 @@ namespace BuberBreakfast.Controllers
             return updateUserResult.Match(updated => updated.IsNewlyCreated ? CreatedAtGetUser(appUser) : NoContent(), Problem);
         }
 
+        [NonAction]
         private static UserResponse MapUserResponse(AppUser user)
         {
             var userName = user.FirstName + " " + user.LastName;
@@ -71,7 +72,7 @@ namespace BuberBreakfast.Controllers
         private CreatedAtActionResult CreatedAtGetUser(AppUser user)
         {
             return CreatedAtAction(
-                actionName: "",
+                actionName: nameof(GetUser),
                 routeValues: new { id = user.Id },
                 value: MapUserResponse(user)
             );

@@ -45,6 +45,7 @@ namespace BuberBreakfast.Models
                 LastName = lastName,
                 PhoneNumber = phoneNumber,
                 Email = email,
+                CreatedDate = DateTime.UtcNow
             };
         }
 

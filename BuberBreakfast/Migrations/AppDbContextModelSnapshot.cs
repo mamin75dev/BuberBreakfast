@@ -17,6 +17,36 @@ namespace BuberBreakfast.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 64)
                 .HasAnnotation("ProductVersion", "5.0.17");
 
+            modelBuilder.Entity("BuberBreakfast.Models.AppUser", b =>
+                {
+                    b.Property<byte[]>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("varbinary(16)");
+
+                    b.Property<DateTime>("CreatedDate")
+                        .HasColumnType("datetime");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("FirstName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("LastName")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PhoneNumber")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("AppUsers");
+                });
+
             modelBuilder.Entity("BuberBreakfast.Models.Breakfast", b =>
                 {
                     b.Property<byte[]>("Id")
@@ -118,36 +148,6 @@ namespace BuberBreakfast.Migrations
                     b.ToTable("Posts");
                 });
 
-            modelBuilder.Entity("BuberBreakfast.Models.User", b =>
-                {
-                    b.Property<byte[]>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("varbinary(16)");
-
-                    b.Property<DateTime>("CreatedDate")
-                        .HasColumnType("datetime");
-
-                    b.Property<string>("Email")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("FirstName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("LastName")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.Property<string>("PhoneNumber")
-                        .IsRequired()
-                        .HasColumnType("text");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Users");
-                });
-
             modelBuilder.Entity("BuberBreakfast.Models.Comment", b =>
                 {
                     b.HasOne("BuberBreakfast.Models.Post", "Post")
@@ -156,7 +156,7 @@ namespace BuberBreakfast.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("BuberBreakfast.Models.User", "User")
+                    b.HasOne("BuberBreakfast.Models.AppUser", "User")
                         .WithMany("Comments")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -169,7 +169,7 @@ namespace BuberBreakfast.Migrations
 
             modelBuilder.Entity("BuberBreakfast.Models.Post", b =>
                 {
-                    b.HasOne("BuberBreakfast.Models.User", "User")
+                    b.HasOne("BuberBreakfast.Models.AppUser", "User")
                         .WithMany("Posts")
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
@@ -178,16 +178,16 @@ namespace BuberBreakfast.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("BuberBreakfast.Models.Post", b =>
-                {
-                    b.Navigation("Comments");
-                });
-
-            modelBuilder.Entity("BuberBreakfast.Models.User", b =>
+            modelBuilder.Entity("BuberBreakfast.Models.AppUser", b =>
                 {
                     b.Navigation("Comments");
 
                     b.Navigation("Posts");
+                });
+
+            modelBuilder.Entity("BuberBreakfast.Models.Post", b =>
+                {
+                    b.Navigation("Comments");
                 });
 #pragma warning restore 612, 618
         }
