@@ -58,7 +58,7 @@ namespace BuberBreakfast.Models
             );
         }
 
-        public static ErrorOr<AppUser> From(Guid id, CreateUserRequest request)
+        public static ErrorOr<AppUser> From(Guid id, UpdateUserRequest request)
         {
             return Create(
                 request.FirstName,

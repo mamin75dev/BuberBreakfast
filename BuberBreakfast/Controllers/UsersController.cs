@@ -28,9 +28,32 @@ namespace BuberBreakfast.Controllers
 
             ErrorOr<Created> createBreakfastResult = await _userService.CreateUser(user);
 
-            return createBreakfastResult.Match(created => CreatedAtGetBreakfast(user), Problem);
+            return createBreakfastResult.Match(created => CreatedAtGetUser(user), Problem);
         }
 
+        [HttpGet("{id:guid}")]
+        public async Task<IActionResult> GetUser(Guid id)
+        {
+            ErrorOr<AppUser> getUserResult = await _userService.GetUser(id);
+
+            return getUserResult.Match(user => Ok(MapUserResponse(user)), Problem);
+        }
+
+        public async Task<IActionResult> UpdateUser(Guid id, UpdateUserRequest request)
+        {
+            ErrorOr<AppUser> requestToUserResult = AppUser.From(id, request);
+
+            if (requestToUserResult.IsError)
+            {
+                return Problem(requestToUserResult.Errors);
+            }
+
+            var appUser = requestToUserResult.Value;
+
+            ErrorOr<UpdatedUser> updateUserResult = await _userService.UpdateUser(appUser);
+
+            return updateUserResult.Match(updated => updated.IsNewlyCreated ? CreatedAtGetUser(appUser) : NoContent(), Problem);
+        }
 
         private static UserResponse MapUserResponse(AppUser user)
         {
@@ -45,7 +68,7 @@ namespace BuberBreakfast.Controllers
             );
         }
         [NonAction]
-        private CreatedAtActionResult CreatedAtGetBreakfast(AppUser user)
+        private CreatedAtActionResult CreatedAtGetUser(AppUser user)
         {
             return CreatedAtAction(
                 actionName: "",
