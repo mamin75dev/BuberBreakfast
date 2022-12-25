@@ -36,7 +36,7 @@ namespace BuberBreakfast.Services.Users
 
             if (user == null)
             {
-                return Errors.Breakfast.NotFound; //TODO: change this
+                return Errors.User.NotFound;
             }
 
             return user;

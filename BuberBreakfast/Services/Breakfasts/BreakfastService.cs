@@ -75,10 +75,7 @@ public class BreakfastService : IBreakfastService
 
     public async Task<ErrorOr<Deleted>> DeleteBreakfast(Guid id)
     {
-        var entity = new Breakfast
-        {
-            Id = id,
-        };
+        var entity = new Breakfast { Id = id };
 
         _appDbContext.Attach(entity);
         _appDbContext.Remove(entity);
@@ -88,7 +85,7 @@ public class BreakfastService : IBreakfastService
         return Result.Deleted;
     }
 
-    public async Task<ErrorOr<List<Breakfast>>> GetBreakfasts()
+    public async Task<ErrorOr<List<Breakfast>>> GetAllBreakfasts()
     {
         List<Breakfast> List = await _appDbContext.Breakfasts.Select(breakfast => new Breakfast
         {

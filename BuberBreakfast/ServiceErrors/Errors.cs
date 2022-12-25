@@ -25,4 +25,9 @@ public class Errors
         public static Error NotFound =>
             Error.NotFound(code: "User.NotFound!", description: "User not found!");
     }
+
+    public static class Post
+    {
+        public static Error NotFound => Error.NotFound(code: "Post.NotFound!", description: "Post Not Found!");
+    }
 }

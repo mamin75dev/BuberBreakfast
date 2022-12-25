@@ -9,5 +9,5 @@ public interface IBreakfastService
     Task<ErrorOr<Breakfast>> GetBreakfast(Guid id);
     Task<ErrorOr<UpsertedBreakfast>> UpsertBreakfast(Breakfast breakfast);
     Task<ErrorOr<Deleted>> DeleteBreakfast(Guid id);
-    Task<ErrorOr<List<Breakfast>>> GetBreakfasts();
+    Task<ErrorOr<List<Breakfast>>> GetAllBreakfasts();
 }

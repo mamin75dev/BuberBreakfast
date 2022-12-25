@@ -35,7 +35,7 @@ public class BreakfastsController : ApiController
     [HttpGet]
     public async Task<IActionResult> GetAllBreakfasts()
     {
-        ErrorOr<List<Breakfast>> getBreakfastsResult = await _breakfastService.GetBreakfasts();
+        ErrorOr<List<Breakfast>> getBreakfastsResult = await _breakfastService.GetAllBreakfasts();
 
         return getBreakfastsResult.Match(breakfasts => Ok(breakfasts), Problem);
 

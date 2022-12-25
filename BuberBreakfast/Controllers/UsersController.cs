@@ -68,6 +68,7 @@ namespace BuberBreakfast.Controllers
                 user.CreatedDate
             );
         }
+
         [NonAction]
         private CreatedAtActionResult CreatedAtGetUser(AppUser user)
         {
