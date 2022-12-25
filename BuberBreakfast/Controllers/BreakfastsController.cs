@@ -15,7 +15,7 @@ public class BreakfastsController : ApiController
         _breakfastService = breakfastService;
     }
 
-    [HttpPost]
+    [HttpPost("create")]
     public async Task<IActionResult> CreateBreakfast(CreateBreakfastRequest request)
     {
         ErrorOr<Breakfast> requestToBreakfastResult = Breakfast.From(request);
@@ -32,25 +32,24 @@ public class BreakfastsController : ApiController
         return createBreakfastResult.Match(created => CreatedAtGetBreakfast(breakfast), Problem);
     }
 
-    [HttpGet]
+    [HttpGet("all")]
     public async Task<IActionResult> GetAllBreakfasts()
     {
         ErrorOr<List<Breakfast>> getBreakfastsResult = await _breakfastService.GetAllBreakfasts();
 
         return getBreakfastsResult.Match(breakfasts => Ok(breakfasts), Problem);
-
     }
 
-    [HttpGet("{id:guid}")]
-    public async Task<IActionResult> GetBreakfast(Guid id)
+    [HttpGet("details")]
+    public async Task<IActionResult> GetBreakfast([FromQuery(Name = "id")] Guid id)
     {
         ErrorOr<Breakfast> getBreakfastResult = await _breakfastService.GetBreakfast(id);
 
         return getBreakfastResult.Match(breakfast => Ok(MapBreakfastResponse(breakfast)), Problem);
     }
 
-    [HttpPut("{id:guid}")]
-    public async Task<IActionResult> UpsertBreakfast(Guid id, UpsertBreakfastRequest request)
+    [HttpPut("update")]
+    public async Task<IActionResult> UpsertBreakfast([FromQuery(Name = "id")] Guid id, UpsertBreakfastRequest request)
     {
         ErrorOr<Breakfast> requestToBreakfastResult = Breakfast.From(id, request);
 
@@ -67,13 +66,14 @@ public class BreakfastsController : ApiController
             updated => updated.IsNewlyCreated ? CreatedAtGetBreakfast(breakfast) : NoContent(), Problem);
     }
 
-    [HttpDelete("{id:guid}")]
-    public async Task<IActionResult> DeleteBreakfast(Guid id)
+    [HttpDelete("delete")]
+    public async Task<IActionResult> DeleteBreakfast([FromQuery(Name = "id")] Guid id)
     {
         ErrorOr<Deleted> deleteBreakfastResult = await _breakfastService.DeleteBreakfast(id);
 
         return deleteBreakfastResult.Match(updated => NoContent(), Problem);
     }
+
     [NonAction]
     private static BreakfastResponse MapBreakfastResponse(Breakfast breakfast)
     {
@@ -88,6 +88,7 @@ public class BreakfastsController : ApiController
             breakfast.Sweet
         );
     }
+
     [NonAction]
     private CreatedAtActionResult CreatedAtGetBreakfast(Breakfast breakfast)
     {

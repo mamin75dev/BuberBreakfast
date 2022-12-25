@@ -1,4 +1,5 @@
-﻿using ErrorOr;
+﻿using BuberBreakfast.Contracts.Post;
+using ErrorOr;
 
 namespace BuberBreakfast.Models
 {
@@ -13,7 +14,6 @@ namespace BuberBreakfast.Models
         public AppUser User { get; set; }
         public Guid UserId { get; set; }
         public List<Comment> Comments { get; set; }
-
 
 
         public static ErrorOr<Post> Create(
@@ -43,6 +43,18 @@ namespace BuberBreakfast.Models
                 UpdatedDate = updatedDate,
                 UserId = userId,
             };
+        }
+
+        public static ErrorOr<Post> From(CreatePostRequest request)
+        {
+            return Create(
+                request.Title,
+                request.Description,
+                request.ImageUrl,
+                DateTime.UtcNow,
+                DateTime.UtcNow,
+                request.UserId
+            );
         }
     }
 }

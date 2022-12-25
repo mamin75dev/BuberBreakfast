@@ -14,7 +14,8 @@ namespace BuberBreakfast.Controllers
         {
             _userService = userService;
         }
-        [HttpPost]
+
+        [HttpPost("create")]
         public async Task<IActionResult> CreateUser(CreateUserRequest request)
         {
             ErrorOr<AppUser> requestToUserResult = AppUser.From(request);
@@ -31,15 +32,26 @@ namespace BuberBreakfast.Controllers
             return createBreakfastResult.Match(created => CreatedAtGetUser(user), Problem);
         }
 
-        [HttpGet("{id:guid}")]
-        public async Task<IActionResult> GetUser(Guid id)
+        [HttpGet("all")]
+        public async Task<IActionResult> GetAllUsers()
+        {
+            ErrorOr<List<AppUser>> users = await _userService.GetAllUsers();
+
+            if (users.IsError) return Problem(users.Errors);
+
+            return Ok(users.Value);
+        }
+
+        [HttpGet("details")]
+        public async Task<IActionResult> GetUser([FromQuery(Name = "id")] Guid id)
         {
             ErrorOr<AppUser> getUserResult = await _userService.GetUser(id);
 
             return getUserResult.Match(user => Ok(MapUserResponse(user)), Problem);
         }
-        [HttpPut("{id:guid}")]
-        public async Task<IActionResult> UpdateUser(Guid id, UpdateUserRequest request)
+
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateUser([FromQuery(Name = "id")] Guid id, UpdateUserRequest request)
         {
             ErrorOr<AppUser> requestToUserResult = AppUser.From(id, request);
 
@@ -52,7 +64,8 @@ namespace BuberBreakfast.Controllers
 
             ErrorOr<UpdatedUser> updateUserResult = await _userService.UpdateUser(appUser);
 
-            return updateUserResult.Match(updated => updated.IsNewlyCreated ? CreatedAtGetUser(appUser) : NoContent(), Problem);
+            return updateUserResult.Match(updated => updated.IsNewlyCreated ? CreatedAtGetUser(appUser) : NoContent(),
+                Problem);
         }
 
         [NonAction]

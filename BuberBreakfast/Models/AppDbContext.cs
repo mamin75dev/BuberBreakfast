@@ -13,7 +13,7 @@ public class AppDbContext : DbContext
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
     {
-        /*optionsBuilder.UseMySQL("server=localhost;database=buber_breakfast;uid=root;pwd=Mohamad1375");*/
+        // optionsBuilder.UseMySQL("server=localhost;database=buber_breakfast;uid=root;pwd=Mohamad1375");
     }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)

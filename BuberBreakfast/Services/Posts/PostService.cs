@@ -104,7 +104,7 @@ namespace BuberBreakfast.Services.Posts
                 CreatedDate = post.CreatedDate,
                 UpdatedDate = post.UpdatedDate,
                 UserId = post.UserId,
-            }).FirstOrDefaultAsync();
+            }).FirstOrDefaultAsync(p => p.Id == id);
 
             if (post.IsError) return Errors.Post.NotFound;
 
@@ -133,7 +133,7 @@ namespace BuberBreakfast.Services.Posts
 
         public async Task<ErrorOr<UpdatedPostResult>> UpdatePost(Post post)
         {
-            var entity = await _appDbContext.Posts.FirstOrDefaultAsync(post => post.Id == post.Id);
+            var entity = await _appDbContext.Posts.FirstOrDefaultAsync(p => p.Id == post.Id);
 
             bool IsNewlyCreated = false;
             if (entity == null)

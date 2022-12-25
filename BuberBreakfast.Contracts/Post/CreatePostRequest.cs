@@ -4,6 +4,6 @@
         string Title,
         string Description,
         string ImageUrl,
-        Guid userId
+        Guid UserId
     );
 }

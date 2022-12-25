@@ -17,17 +17,18 @@ namespace BuberBreakfast.Controllers
             _postService = postService;
             _userService = userService;
         }
-        [HttpPost]
+
+        [HttpPost("create")]
         public async Task<IActionResult> CreatePost(CreatePostRequest request)
         {
-            ErrorOr<AppUser> user = await _userService.GetUser(request.userId);
+            ErrorOr<AppUser> user = await _userService.GetUser(request.UserId);
 
             if (user.IsError)
             {
                 return Problem(user.Errors);
             }
 
-            ErrorOr<Post> requestToPostResult = Post.Create(request.Title, request.Description, request.ImageUrl, DateTime.UtcNow, DateTime.UtcNow, request.userId);
+            ErrorOr<Post> requestToPostResult = Post.From(request);
 
             if (requestToPostResult.IsError)
             {
@@ -41,7 +42,7 @@ namespace BuberBreakfast.Controllers
             return createPostResult.Match(craeted => Ok(MapPostResponse(post)), Problem);
         }
 
-        [HttpGet]
+        [HttpGet("all")]
         public async Task<IActionResult> GetAllPosts()
         {
             ErrorOr<List<Post>> posts = await _postService.GetAllPosts();
@@ -52,8 +53,8 @@ namespace BuberBreakfast.Controllers
             return Ok(posts.Value);
         }
 
-        [HttpGet("user_posts/{id:guid}")]
-        public async Task<IActionResult> GetUserPosts(Guid id)
+        [HttpGet("user_posts")]
+        public async Task<IActionResult> GetUserPosts([FromQuery(Name = "user_id")] Guid id)
         {
             ErrorOr<List<Post>> posts = await _postService.GetUserPosts(id);
 
@@ -62,8 +63,8 @@ namespace BuberBreakfast.Controllers
             return Ok(posts.Value);
         }
 
-        [HttpGet("details/{id:guid}")]
-        public async Task<IActionResult> GetPostDetails(Guid id)
+        [HttpGet("details")]
+        public async Task<IActionResult> GetPostDetails([FromQuery(Name = "id")] Guid id)
         {
             ErrorOr<Post> post = await _postService.GetPostDetails(id);
 
@@ -75,7 +76,6 @@ namespace BuberBreakfast.Controllers
         [NonAction]
         private static PostResponse MapPostResponse(Post post)
         {
-
             return new PostResponse(
                 post.Id,
                 post.Title,
