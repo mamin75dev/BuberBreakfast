@@ -41,7 +41,28 @@ namespace BuberBreakfast.Controllers
             return createPostResult.Match(craeted => Ok(MapPostResponse(post)), Problem);
         }
 
-        [HttpGet("{id:guid}")]
+        [HttpGet]
+        public async Task<IActionResult> GetAllPosts()
+        {
+            ErrorOr<List<Post>> posts = await _postService.GetAllPosts();
+
+
+            if (posts.IsError) return Problem(posts.Errors);
+
+            return Ok(posts.Value);
+        }
+
+        [HttpGet("user_posts/{id:guid}")]
+        public async Task<IActionResult> GetUserPosts(Guid id)
+        {
+            ErrorOr<List<Post>> posts = await _postService.GetUserPosts(id);
+
+            if (posts.IsError) return Problem(posts.Errors);
+
+            return Ok(posts.Value);
+        }
+
+        [HttpGet("post_details/{id:guid}")]
         public async Task<IActionResult> GetPostDetails(Guid id)
         {
 
